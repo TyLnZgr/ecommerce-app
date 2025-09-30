@@ -31,12 +31,6 @@ This project demonstrates a high-performance, secure online shopping platform an
 - **Responsive Design:** Fully mobile-friendly layout
 - **Code Quality & Testing:** ESLint for code standards, Jest for unit tests
 
----
+  ```
 
-## 🔹 Setup
-
-1. Clone the repository:
-
-   ```bash
-
-   ```
+  ```
