@@ -14,7 +14,7 @@ const eslintConfig = [
   {
     files: ["prisma/generated/**"], // sadece Prisma klasörü
     rules: {
-      "@typescript-eslint/no-require-imports": "off", // 🔥 require() yasağını kapat
+      "@typescript-eslint/*": "off",
     },
   },
   {
