@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { email, z } from "zod";
 import { formatNumberWithDecimal } from "./utils";
 
 const currency = z
@@ -20,4 +20,11 @@ export const insertProductScheme = z.object({
   isFeatured: z.boolean(),
   banner: z.string().nullable(),
   price: currency,
+});
+
+//Schema for sign in users
+
+export const signInFormSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });

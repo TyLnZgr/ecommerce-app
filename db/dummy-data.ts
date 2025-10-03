@@ -1,4 +1,19 @@
+import { hashSync } from "bcrypt-ts-edge";
 const DUMMY_DATA = {
+  users: [
+    {
+      name: "Taylan",
+      email: "admin@example.com",
+      password: hashSync("123456", 10),
+      role: "admin",
+    },
+    {
+      name: "Özgür",
+      email: "user@example.com",
+      password: hashSync("123456", 10),
+      role: "user",
+    },
+  ],
   products: [
     {
       name: "Polo Sporting Stretch Shirt",
