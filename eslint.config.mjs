@@ -16,6 +16,7 @@ const eslintConfig = [
     rules: {
       "@typescript-eslint/*": "off",
     },
+    ignores: ["lib/generated/prisma/**/*.js"],
   },
   {
     ignores: [
@@ -24,6 +25,7 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "lib/generated/prisma/**",
     ],
   },
 ];
