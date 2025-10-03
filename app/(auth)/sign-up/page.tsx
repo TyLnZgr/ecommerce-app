@@ -1,5 +1,4 @@
 import React from "react";
-import CredentialsSigninForm from "@/components/auth/credentials-signin-form";
 import {
   Card,
   CardContent,
@@ -13,11 +12,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import SignInWithGoogle from "@/components/auth/sign-in-with-google";
+import SignUpForm from "@/components/auth/sign-up-form";
 export const metadata: Metadata = {
-  title: "Sign In",
+  title: "Sign Up",
 };
-export default async function SignInPage(props: {
+export default async function SignUpPage(props: {
   searchParams: Promise<{
     callbackUrl: string;
   }>;
@@ -40,14 +39,13 @@ export default async function SignInPage(props: {
               alt={`${APP_NAME} lOGO`}
             />
           </Link>
-          <CardTitle className="text-center">Sign In</CardTitle>
+          <CardTitle className="text-center">Create Account</CardTitle>
           <CardDescription className="text-center">
-            Sign in to your account
+            Enter your information below to sign up
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <CredentialsSigninForm />
-          <SignInWithGoogle callbackUrl={callbackUrl} />
+          <SignUpForm />
         </CardContent>
       </Card>
     </div>
