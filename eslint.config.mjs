@@ -12,6 +12,12 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    files: ["prisma/generated/**"], // sadece Prisma klasörü
+    rules: {
+      "@typescript-eslint/no-require-imports": "off", // 🔥 require() yasağını kapat
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",
