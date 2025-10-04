@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { NextResponse } from "next/server";
+/* import { NextResponse } from "next/server"; */
 
 export const config = {
   pages: {
@@ -69,7 +69,7 @@ export const config = {
             data: {
               name: user.name || user.email!.split("@")[0] || "NO_NAME",
               email: user.email!,
-              role: "USER", // default role
+              role: "user",
             },
           });
         }
@@ -107,7 +107,7 @@ export const config = {
       return token;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    authorized({ request, auth }: any) {
+    /* authorized({ request, auth }: any) {
       if (!request.cookies.get("sessionCartId")) {
         const sessionCartId = crypto.randomUUID();
         const newRequestHeaders = new Headers(request.headers);
@@ -121,7 +121,7 @@ export const config = {
       } else {
         return true;
       }
-    },
+    }, */
   },
 } satisfies NextAuthConfig;
 
