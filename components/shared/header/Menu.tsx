@@ -18,7 +18,7 @@ export default function Menu() {
       <nav className="hidden md:flex w-full max-w-xs gap-1">
         <ThemeModeToggle />
         <Button asChild variant="ghost">
-          <Link href="cart">
+          <Link href="/cart">
             <ShoppingCartIcon /> Card
           </Link>
         </Button>

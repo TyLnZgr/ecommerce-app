@@ -12,7 +12,7 @@ export default function ProductPrice({
   const [priceInt, priceFloat] = priceValue.split(".");
   return (
     <p className={cn("text-2xl", className)}>
-      <span className="text-xs align-super">₺</span>
+      <span className="text-xs align-super">$</span>
       {priceInt}
       <span className="text-xs align-super">{priceFloat}</span>
     </p>
