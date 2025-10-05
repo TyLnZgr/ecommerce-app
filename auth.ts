@@ -13,6 +13,7 @@ export const config = {
     signIn: "/sign-in",
     error: "/sign-in",
   },
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 24 * 60 * 60, //1 day
