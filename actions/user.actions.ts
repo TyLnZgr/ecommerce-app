@@ -13,7 +13,6 @@ import { formatError } from "@/lib/utils";
 import { ShippingAddress } from "@/types";
 import z from "zod";
 import { hashSync } from "bcrypt-ts-edge";
-import { redirect } from "next/navigation";
 
 //Sign in the user with credentials
 
