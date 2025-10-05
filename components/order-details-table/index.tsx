@@ -28,7 +28,7 @@ export default function OrderDetailsTable({ order }: { order: Order }) {
     isPaid,
     paidAt,
     deliveredAt,
-    isDelivered,
+    /* isDelivered, */
   } = order;
   return (
     <>
