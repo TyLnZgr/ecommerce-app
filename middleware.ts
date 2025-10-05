@@ -5,38 +5,56 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Sign-in ve sign-up sayfalarını atla
+  // Auth sayfalarını tamamen atla
   if (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")) {
     return NextResponse.next();
   }
 
-  // Korumalı sayfalar
+  // Korumalı sayfalar listesi
   const protectedPaths = [
-    /\/shipping-address/,
-    /\/payment-method/,
-    /\/place-order/,
-    /\/profile/,
-    /\/user\/(.*)/,
-    /\/order\/(.*)/,
-    /\/admin/,
+    /^\/shipping-address$/,
+    /^\/payment-method$/,
+    /^\/place-order$/,
+    /^\/profile$/,
+    /^\/user\/.+/,
+    /^\/order\/.+/,
+    /^\/admin/,
   ];
 
+  // Bu sayfa korumalı mı kontrol et
   const isProtectedPath = protectedPaths.some((path) => path.test(pathname));
 
-  // Token kontrolü
+  // Korumalı sayfa değilse sadece cookie kontrolü yap
+  if (!isProtectedPath) {
+    const response = NextResponse.next();
+
+    if (!request.cookies.get("sessionCartId")) {
+      const sessionCartId = crypto.randomUUID();
+      response.cookies.set("sessionCartId", sessionCartId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    }
+
+    return response;
+  }
+
+  // Korumalı sayfa için token kontrolü
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  // Giriş yapmamışsa sign-in'e yönlendir
-  if (isProtectedPath && !token) {
+  // Token yoksa sign-in'e yönlendir
+  if (!token) {
     const signInUrl = new URL("/sign-in", request.url);
     signInUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(signInUrl);
   }
 
-  // sessionCartId cookie'si oluştur
+  // Token varsa devam et
   const response = NextResponse.next();
 
   if (!request.cookies.get("sessionCartId")) {
@@ -45,7 +63,7 @@ export async function middleware(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30, // 30 gün
+      maxAge: 60 * 60 * 24 * 30,
     });
   }
 
@@ -55,14 +73,11 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except:
-     * - api routes
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico
-     * - public files (images, etc)
-     * - sign-in and sign-up pages
+     * Tüm path'leri kontrol et, sadece şunlar hariç:
+     * - /api/* (API routes)
+     * - /_next/* (Next.js internal)
+     * - Static files
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|sign-in|sign-up|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js)$).*)",
   ],
 };
