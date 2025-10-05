@@ -5,6 +5,11 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Sign-in ve sign-up sayfalarını atla
+  if (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")) {
+    return NextResponse.next();
+  }
+
   // Korumalı sayfalar
   const protectedPaths = [
     /\/shipping-address/,
@@ -49,6 +54,15 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    /*
+     * Match all request paths except:
+     * - api routes
+     * - _next/static (static files)
+     * - _next/image (image optimization)
+     * - favicon.ico
+     * - public files (images, etc)
+     * - sign-in and sign-up pages
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|sign-in|sign-up|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
