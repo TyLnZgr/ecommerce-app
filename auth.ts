@@ -4,7 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+/* import GoogleProvider from "next-auth/providers/google"; */
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
@@ -53,13 +53,13 @@ export const config = {
         return null;
       },
     }),
-    GoogleProvider({
+    /*  GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    }), */
   ],
   callbacks: {
-    async signIn({ user, account }) {
+    /*  async signIn({ user, account }) {
       if (account?.provider === "google") {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email! },
@@ -76,7 +76,7 @@ export const config = {
         }
       }
       return true;
-    },
+    }, */
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, user, trigger, token }: any) {
