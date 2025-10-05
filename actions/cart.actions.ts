@@ -7,17 +7,18 @@ import { cartItemSchema, insertCartSchema } from "@/lib/validator";
 import { CartItem } from "@/types";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-const calcPrice = (items: CartItem[]) => {
+import z from "zod";
+const calcPrice = (items: z.infer<typeof cartItemSchema>[]) => {
   const itemsPrice = round2(
       items.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0)
     ),
-    shippingPrice = round2(itemsPrice > 100 ? 0 : 100),
+    shippingPrice = round2(itemsPrice > 100 ? 0 : 10),
     taxPrice = round2(0.15 * itemsPrice),
     totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
   return {
     itemsPrice: itemsPrice.toFixed(2),
-    taxPrice: taxPrice.toFixed(2),
     shippingPrice: shippingPrice.toFixed(2),
+    taxPrice: taxPrice.toFixed(2),
     totalPrice: totalPrice.toFixed(2),
   };
 };
@@ -37,19 +38,24 @@ export async function addItemToCart(data: CartItem) {
     });
     if (!product) throw new Error("Product not found");
     if (!cart) {
+      // Create new cart object
       const newCart = insertCartSchema.parse({
         userId: userId,
         items: [item],
         sessionCartId: sessionCartId,
         ...calcPrice([item]),
       });
+      // Add to database
       await prisma.cart.create({
         data: newCart,
       });
+
+      // Revalidate product page
       revalidatePath(`/product/${product.slug}`);
+
       return {
-        success: false,
-        message: `${product.name} added to cart`,
+        success: true,
+        message: "Item added to cart successfully",
       };
     } else {
       const existItem = (cart.items as CartItem[]).find(
@@ -102,10 +108,10 @@ export async function getMyCart() {
   return convertToPlainObject({
     ...cart,
     items: cart.items as CartItem[],
-    itemsPrice: cart.itemsPrice.toString(),
-    totalPrice: cart.itemsPrice.toString(),
-    taxPrice: cart.itemsPrice.toString(),
-    shippingPrice: cart.itemsPrice.toString(),
+    itemsPrice: cart.itemsPrice,
+    totalPrice: cart.totalPrice,
+    taxPrice: cart.taxPrice,
+    shippingPrice: cart.shippingPrice,
   });
 }
 export async function removeItemFromCart(productId: string) {
