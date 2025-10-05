@@ -8,11 +8,11 @@ import {
 } from "@/lib/validator";
 import { auth, signIn, signOut } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
 import { formatError } from "@/lib/utils";
 import { ShippingAddress } from "@/types";
 import z from "zod";
+import { hashSync } from "bcrypt-ts-edge";
 
 //Sign in the user with credentials
 

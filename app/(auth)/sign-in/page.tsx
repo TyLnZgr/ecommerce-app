@@ -13,7 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-/* import SignInWithGoogle from "@/components/auth/sign-in-with-google"; */
+import SignInWithGoogle from "@/components/auth/sign-in-with-google";
 export const metadata: Metadata = {
   title: "Sign In",
 };
@@ -47,7 +47,7 @@ export default async function SignInPage(props: {
         </CardHeader>
         <CardContent className="space-y-4">
           <CredentialsSigninForm />
-          {/* <SignInWithGoogle callbackUrl={callbackUrl} /> */}
+          <SignInWithGoogle callbackUrl={callbackUrl} />
         </CardContent>
       </Card>
     </div>
