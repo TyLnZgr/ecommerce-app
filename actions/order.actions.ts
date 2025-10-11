@@ -8,7 +8,7 @@ import { getUserById } from "./user.actions";
 import { insertOrderSchema } from "@/lib/validator";
 import { prisma } from "@/db/prisma";
 import { CartItem } from "@/types";
-
+import { PAGE_SIZE } from "@/lib/constants";
 export async function createOrder() {
   try {
     const session = await auth();
@@ -96,4 +96,28 @@ export async function getOrderById(orderId: string) {
     },
   });
   return convertToPlainObject(data);
+}
+export async function getMOrders({
+  limit = PAGE_SIZE,
+  page,
+}: {
+  limit?: number;
+  page: number;
+}) {
+  const session = await auth();
+  if (!session) throw new Error("User is not authorized");
+
+  const orderData = await prisma.order.findMany({
+    where: { userId: session?.user?.id },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+  const dataCount = await prisma.order.count({
+    where: { userId: session?.user?.id },
+  });
+  return {
+    orderData,
+    totalPages: Math.ceil(dataCount / limit),
+  };
 }
