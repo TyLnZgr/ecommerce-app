@@ -49,7 +49,26 @@ pnpm install
 # or
 yarn install
 
+# ---------- Public App Info ----------
+# ---------- App Info ----------
+NEXT_PUBLIC_APP_NAME="E-commerce App"
+NEXT_PUBLIC_APP_DESC="A Modern ecommerce platform built with Next.js"
+NEXT_PUBLIC_SERVER_URL="http://localhost:3000"
 
+# ---------- Database ----------
+# Replace with your own PostgreSQL connection string
+DATABASE_URL="postgresql://<USER>:<PASSWORD>@<HOST>/<DB_NAME>?sslmode=require"
+
+# ---------- Authentication ----------
+NEXTAUTH_SECRET="your-random-secret"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_URL_INTERNAL="http://localhost:3000"
+
+# ---------- Google OAuth ----------
+# You can create credentials from Google Cloud Console:
+# https://console.cloud.google.com/apis/credentials
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
 Setup the Database
 npx prisma migrate dev
