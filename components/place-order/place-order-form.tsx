@@ -24,7 +24,6 @@ export default function PlaceOrderForm() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const res = await createOrder();
-    console.log("res", res);
     if (res.redirectTo) {
       router.push(res.redirectTo);
     }

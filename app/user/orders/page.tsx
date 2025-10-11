@@ -23,7 +23,6 @@ export default async function OrdersPage(props: {
   const orders = await getMOrders({
     page: Number(page) || 1,
   });
-  console.log("page", page);
   return (
     <div className="space-y-2 ">
       <h2 className="h2-bold">Orders</h2>

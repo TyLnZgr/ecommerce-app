@@ -24,7 +24,6 @@ export default function SignUpForm() {
       </Button>
     );
   };
-  console.log("data", data);
   return (
     <form action={action}>
       <input type="hidden" name="callbackUrl" value={callbackUrl} />

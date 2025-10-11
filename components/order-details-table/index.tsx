@@ -81,7 +81,7 @@ export default function OrderDetailsTable({
                 </Badge>
               ) : (
                 <Badge variant="destructive">Not Paid</Badge>
-              )}
+              )}{" "}
               {isDelivered ? (
                 <Badge variant="secondary">
                   Delivered at {formatDateTime(deliveredAt!).dateTime}

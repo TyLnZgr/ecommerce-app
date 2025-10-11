@@ -37,7 +37,6 @@ export default async function PlaceOrderPage() {
   if (!user.address) redirect("/shipping-address");
   if (!user.paymentMethod) redirect("/payment-method");
   const userAddress = user.address as ShippingAddress;
-  console.log("cart", cart);
   return (
     <>
       <CheckOutSteps current={3} />

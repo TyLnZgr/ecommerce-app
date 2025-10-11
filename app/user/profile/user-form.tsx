@@ -38,7 +38,6 @@ export default function UserForm() {
         name: values.name,
       },
     };
-    console.log("result", result);
     await update(newSession);
     toast.success(result.message);
   };

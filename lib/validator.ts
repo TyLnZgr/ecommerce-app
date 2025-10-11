@@ -10,7 +10,7 @@ const currency = z
   );
 //Schema for inserting products
 
-export const insertProductScheme = z.object({
+export const insertProductSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   slug: z.string().min(3, "Slug must be at least 3 characters"),
   category: z.string().min(3, "Category must be at least 3 characters"),
@@ -22,7 +22,9 @@ export const insertProductScheme = z.object({
   banner: z.string().nullable(),
   price: currency,
 });
-
+export const updateProductSchema = insertProductSchema.extend({
+  id: z.string().min(1, "Id is required"),
+});
 //Schema for sign in users
 
 export const signInFormSchema = z.object({
@@ -101,6 +103,6 @@ export const insertOrderItemSchema = z.object({
 });
 
 export const updateUserProfileSchema = z.object({
-  name: z.string().min(3, "Name must be a least 3 charackters"),
-  email: z.string().min(3, "Email must be a least 3 charackters"),
+  name: z.string().min(3, "Name must be a least 3 characters"),
+  email: z.string().min(3, "Email must be a least 3 characters"),
 });
