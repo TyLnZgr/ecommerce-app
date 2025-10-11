@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import z from "zod";
 
 export default function UserForm() {
@@ -40,7 +40,7 @@ export default function UserForm() {
     };
     console.log("result", result);
     await update(newSession);
-    toast(result.message);
+    toast.success(result.message);
   };
   return (
     <Form {...form}>

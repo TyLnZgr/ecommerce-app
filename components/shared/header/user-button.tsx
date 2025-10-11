@@ -54,10 +54,17 @@ export default async function UserButton() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/profile/orders" className="w-full">
+            <Link href="/user/profile" className="w-full">
               User Profile
             </Link>
           </DropdownMenuItem>
+          {session?.user?.role === "admin" && (
+            <DropdownMenuItem>
+              <Link href="/admin/overview" className="w-full">
+                Admin
+              </Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem>
             <form action={signOutUser} className="w-full">
               <Button

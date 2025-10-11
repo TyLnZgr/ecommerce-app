@@ -2,7 +2,6 @@
 import React, { useTransition } from "react";
 import { Cart } from "@/types";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import Link from "next/link";
 import {
   Table,
@@ -18,19 +17,10 @@ import { addItemToCart, removeItemFromCart } from "@/actions/cart.actions";
 import { ArrowRight, Loader, Minus, Plus } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { formatCurrency } from "@/lib/utils";
+import toast from "react-hot-toast";
 export default function CartTable(cart: { cart?: Cart }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
-  /*  toast(res.message, {
-        className: "bg-primary text-white hover:bg-gray-800",
-        position: "top-right",
-        action: {
-          label: "Go to Cart",
-          onClick: () => router.push("/cart"),
-        },
-      }); */
-  console.log("cart", cart);
   return (
     <>
       <h1 className="py-4 h2-bold">Shopping Cart</h1>

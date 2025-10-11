@@ -1,4 +1,5 @@
 import { getOrderById } from "@/actions/order.actions";
+import { auth } from "@/auth";
 import OrderDetailsTable from "@/components/order-details-table";
 import { ShippingAddress } from "@/types";
 import { Metadata } from "next";
@@ -18,6 +19,8 @@ const OrderDetailsPage = async (props: {
   const orderId = Array.isArray(idArray) ? idArray[0] : idArray;
   const order = await getOrderById(orderId);
   if (!order) notFound();
+  const session = await auth();
+
   return (
     <OrderDetailsTable
       order={{
@@ -26,6 +29,7 @@ const OrderDetailsPage = async (props: {
         shippingAddress: order.shippingAddress as ShippingAddress,
         paidAt: null,
       }}
+      isAdmin={session?.user?.role === "admin" || false}
     />
   );
 };

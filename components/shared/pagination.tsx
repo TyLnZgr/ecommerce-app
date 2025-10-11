@@ -11,7 +11,6 @@ type IProps = {
 export default function Pagination({ page, totalPages, urlParamName }: IProps) {
   const router = useRouter();
   const searchPrams = useSearchParams();
-  console.log("page, totalPages", page, totalPages);
   const handleClick = (btnType: string) => {
     const pageValue = btnType === "prev" ? Number(page) - 1 : Number(page) + 1;
     const newUrl = formUrlQuery({
@@ -23,7 +22,7 @@ export default function Pagination({ page, totalPages, urlParamName }: IProps) {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex justify-end-safe gap-2 mt-4">
       <Button
         size="lg"
         variant="outline"

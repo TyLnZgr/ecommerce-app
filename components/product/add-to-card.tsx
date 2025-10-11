@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { Plus, Minus, Loader } from "lucide-react";
 import { Cart, CartItem } from "@/types";
 import { addItemToCart, removeItemFromCart } from "@/actions/cart.actions";
-import { toast } from "sonner";
 import { useTransition } from "react";
+import toast from "react-hot-toast";
 
 const AddToCart = ({ item, cart }: { item: CartItem; cart?: Cart }) => {
   const router = useRouter();
@@ -20,20 +20,30 @@ const AddToCart = ({ item, cart }: { item: CartItem; cart?: Cart }) => {
         toast.error(res.message);
         return;
       }
-      toast(res.message, {
-        className: "bg-primary text-white hover:bg-gray-800",
-        position: "top-right",
-        action: {
-          label: "Go to Cart",
-          onClick: () => router.push("/cart"),
-        },
-      });
+      toast.custom((t) => (
+        <div
+          className={`${
+            t.visible ? "animate-enter" : "animate-leave"
+          } flex items-center justify-between max-w-sm w-full bg-primary text-white shadow-lg rounded-lg px-4 py-3`}
+        >
+          <span>{res.message}</span>
+          <button
+            onClick={() => {
+              router.push("/cart");
+              toast.dismiss(t.id);
+            }}
+            className="ml-3 bg-white text-primary px-3 py-1 rounded hover:bg-gray-100 text-sm font-medium"
+          >
+            Go to Cart
+          </button>
+        </div>
+      ));
     });
   };
   const handleRemoveFromCart = async () => {
     startTransition(async () => {
       const res = await removeItemFromCart(item.productId);
-      toast(res.message, {
+      toast.success(res.message, {
         className: "bg-primary text-white hover:bg-gray-800",
         position: "bottom-right",
       });

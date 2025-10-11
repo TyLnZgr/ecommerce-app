@@ -19,7 +19,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { ArrowRight, Loader } from "lucide-react";
 import { updateUserAddress } from "@/actions/user.actions";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 export default function ShippingAddressForm({
   address,
 }: {

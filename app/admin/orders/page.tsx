@@ -1,6 +1,8 @@
-import React from "react";
-import { Metadata } from "next";
-import { getMOrders } from "@/actions/order.actions";
+import { deleteOrder, getAllOrders } from "@/actions/order.actions";
+import { auth } from "@/auth";
+import DeleteDialog from "@/components/shared/delete-dialog";
+import Pagination from "@/components/shared/pagination";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,21 +11,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { requireAdmin } from "@/lib/auth-guard";
 import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
+import { Metadata } from "next";
 import Link from "next/link";
-import Pagination from "@/components/shared/pagination";
+import React from "react";
 
 export const metadata: Metadata = {
-  title: "User Order",
+  title: "Admin Orders",
 };
-export default async function OrdersPage(props: {
+export default async function AdminOrdersPage(props: {
   searchParams: Promise<{ page: string }>;
 }) {
-  const { page } = await props.searchParams;
-  const orders = await getMOrders({
-    page: Number(page) || 1,
+  await requireAdmin();
+  const { page = "1" } = await props.searchParams;
+  const session = await auth();
+  if (session?.user.role !== "admin")
+    throw new Error("User is not authentication");
+  const orders = await getAllOrders({
+    page: Number(page),
   });
-  console.log("page", page);
   return (
     <div className="space-y-2 ">
       <h2 className="h2-bold">Orders</h2>
@@ -40,7 +47,7 @@ export default async function OrdersPage(props: {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.orderData.map((order) => (
+            {orders.data.map((order) => (
               <TableRow key={order.id}>
                 <TableCell>{formatId(order.id)}</TableCell>
                 <TableCell>
@@ -53,10 +60,11 @@ export default async function OrdersPage(props: {
                     ? formatDateTime(order.deliveredAt).dateTime
                     : "Not Delivered"}
                 </TableCell>
-                <TableCell>
-                  <Link href={`/order/${order.id}`}>
-                    <span className="px-2">Details</span>
-                  </Link>
+                <TableCell className="flex gap-2">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/order/${order.id}`}>Details</Link>
+                  </Button>
+                  <DeleteDialog id={order.id} action={deleteOrder} />
                 </TableCell>
               </TableRow>
             ))}

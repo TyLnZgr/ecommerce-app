@@ -1,6 +1,6 @@
 "use client";
 import { Order } from "@/types";
-import React from "react";
+import React, { useTransition } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
@@ -14,8 +14,18 @@ import {
 } from "../ui/table";
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "../ui/button";
+import toast from "react-hot-toast";
+import { deliverOrder, updateOrderToPaid } from "@/actions/order.actions";
 
-export default function OrderDetailsTable({ order }: { order: Order }) {
+export default function OrderDetailsTable({
+  order,
+  isAdmin,
+}: {
+  order: Order;
+  isAdmin: boolean;
+}) {
+  const [isPending, startTransition] = useTransition();
   const {
     id,
     shippingAddress,
@@ -28,8 +38,34 @@ export default function OrderDetailsTable({ order }: { order: Order }) {
     isPaid,
     paidAt,
     deliveredAt,
-    /* isDelivered, */
+    isDelivered,
   } = order;
+  const handlePayment = () => {
+    startTransition(async () => {
+      const result = await updateOrderToPaid(id || "");
+
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    });
+  };
+  const MarkAsDeliveredButton = () => {
+    return (
+      <Button
+        type="button"
+        className="w-full"
+        onClick={async () => {
+          const res = await deliverOrder(order.id || "");
+          if (!res.success) toast.error(res.message);
+          toast.success(res.message);
+        }}
+      >
+        Delivered
+      </Button>
+    );
+  };
   return (
     <>
       <h1 className="py-4 text-2xl">Order {id}</h1>
@@ -45,6 +81,13 @@ export default function OrderDetailsTable({ order }: { order: Order }) {
                 </Badge>
               ) : (
                 <Badge variant="destructive">Not Paid</Badge>
+              )}
+              {isDelivered ? (
+                <Badge variant="secondary">
+                  Delivered at {formatDateTime(deliveredAt!).dateTime}
+                </Badge>
+              ) : (
+                <Badge variant="destructive">Not Delivered</Badge>
               )}
             </CardContent>
           </Card>
@@ -123,6 +166,25 @@ export default function OrderDetailsTable({ order }: { order: Order }) {
                 <div>Total</div>
                 <div>{formatCurrency(totalPrice)}</div>
               </div>
+              {!isPaid && (
+                <Button
+                  onClick={handlePayment}
+                  disabled={isPending}
+                  className="w-full"
+                  variant="default"
+                >
+                  {isPending ? "Processing..." : "Pay Now"}
+                </Button>
+              )}
+              {isPaid && (
+                <Badge
+                  variant="secondary"
+                  className="w-full justify-center py-2"
+                >
+                  Payment Completed
+                </Badge>
+              )}
+              {isAdmin && isPaid && !isDelivered && <MarkAsDeliveredButton />}
             </CardContent>
           </Card>
         </div>

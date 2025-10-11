@@ -18,7 +18,7 @@ export function formatNumberWithDecimal(num: number): string {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function formatError(error: any) {
+export function formatError(error: any) {
   if (error instanceof ZodError) {
     return error.issues.map((issue) => issue.message).join(". ");
   } else if (
@@ -60,7 +60,10 @@ export function formatCurrency(amount: number | string | null) {
 export function formatId(id: string) {
   return `..${id.substring(id.length - 10)}`;
 }
-
+const NUMBER_FORMATTER = new Intl.NumberFormat("en-US");
+export function formatNumber(number: number) {
+  return NUMBER_FORMATTER.format(number);
+}
 export const formatDateTime = (dateString: Date) => {
   const dateTimeOptions: Intl.DateTimeFormatOptions = {
     month: "short", // abbreviated month name (e.g., 'Oct')
