@@ -4,6 +4,7 @@ import Image from "next/image";
 import { APP_NAME } from "@/lib/constants";
 import Menu from "./Menu";
 import CategoryDrawer from "./category-drawer";
+import Search from "./search";
 export default function Header() {
   return (
     <header className="w-full border-b">
@@ -25,6 +26,9 @@ export default function Header() {
               </span>
             </div>
           </Link>
+        </div>
+        <div className="hidden md:block">
+          <Search />
         </div>
         <Menu />
       </div>

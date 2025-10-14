@@ -6,6 +6,7 @@ import {
   getLatestProducts,
 } from "@/actions/product.actions";
 import ProductCarousel from "@/components/product/product-carousel";
+import ViewAllProducts from "@/components/view-all-products";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -20,6 +21,7 @@ export default async function HomePage() {
         <ProductCarousel data={featuredProducts} />
       )}
       <ProductList data={products} title="Products" />
+      <ViewAllProducts />
     </>
   );
 }
