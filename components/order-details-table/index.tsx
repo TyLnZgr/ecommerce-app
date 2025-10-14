@@ -1,6 +1,6 @@
 "use client";
 import { Order } from "@/types";
-import React, { useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
@@ -17,6 +17,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import toast from "react-hot-toast";
 import { deliverOrder, updateOrderToPaid } from "@/actions/order.actions";
+import FakeCreditCard from "../fake-credi-card";
 
 export default function OrderDetailsTable({
   order,
@@ -26,6 +27,13 @@ export default function OrderDetailsTable({
   isAdmin: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
+  const [cardData, setCardData] = useState({
+    cardNumber: "",
+    name: "",
+    expiry: "",
+    cvv: "",
+  });
+
   const {
     id,
     shippingAddress,
@@ -40,10 +48,23 @@ export default function OrderDetailsTable({
     deliveredAt,
     isDelivered,
   } = order;
+
   const handlePayment = () => {
+    // Eğer kredi kartı ise form verilerini kontrol et
+    if (paymentMethod === "Credit Card") {
+      const clean = cardData.cardNumber.replace(/\s/g, "");
+      if (clean.length !== 16)
+        return toast.error("Card number must be 16 digits.");
+      if (cardData.name.trim().length < 3)
+        return toast.error("Name is too short.");
+      if (!/^(0[1-9]|1[0-2])\/(\d{2})$/.test(cardData.expiry))
+        return toast.error("Expiry must be in MM/YY format.");
+      if (!/^[0-9]{3,4}$/.test(cardData.cvv))
+        return toast.error("CVV must be 3 or 4 digits.");
+    }
+
     startTransition(async () => {
       const result = await updateOrderToPaid(id || "");
-
       if (result.success) {
         toast.success(result.message);
       } else {
@@ -51,6 +72,7 @@ export default function OrderDetailsTable({
       }
     });
   };
+
   const MarkAsDeliveredButton = () => {
     return (
       <Button
@@ -66,6 +88,7 @@ export default function OrderDetailsTable({
       </Button>
     );
   };
+
   return (
     <>
       <h1 className="py-4 text-2xl">Order {id}</h1>
@@ -81,7 +104,7 @@ export default function OrderDetailsTable({
                 </Badge>
               ) : (
                 <Badge variant="destructive">Not Paid</Badge>
-              )}{" "}
+              )}
               {isDelivered ? (
                 <Badge variant="secondary">
                   Delivered at {formatDateTime(deliveredAt!).dateTime}
@@ -166,16 +189,23 @@ export default function OrderDetailsTable({
                 <div>Total</div>
                 <div>{formatCurrency(totalPrice)}</div>
               </div>
+
+              {/* FakeCreditCard component remains */}
               {!isPaid && (
-                <Button
-                  onClick={handlePayment}
+                <FakeCreditCard
+                  onSuccess={(data) => {
+                    setCardData({
+                      cardNumber: data.method,
+                      name: "Demo",
+                      expiry: "12/25",
+                      cvv: "123",
+                    });
+                    handlePayment();
+                  }}
                   disabled={isPending}
-                  className="w-full"
-                  variant="default"
-                >
-                  {isPending ? "Processing..." : "Pay Now"}
-                </Button>
+                />
               )}
+
               {isPaid && (
                 <Badge
                   variant="secondary"
@@ -184,6 +214,7 @@ export default function OrderDetailsTable({
                   Payment Completed
                 </Badge>
               )}
+
               {isAdmin && isPaid && !isDelivered && <MarkAsDeliveredButton />}
             </CardContent>
           </Card>

@@ -121,7 +121,11 @@ export default function CartTable(cart: { cart?: Cart }) {
                 className="w-full"
                 disabled={isPending}
                 onClick={() => {
-                  startTransition(() => router.push("/shipping-address"));
+                  startTransition(() =>
+                    cart?.cart?.items?.length && cart.cart?.items?.length > 0
+                      ? router.push("/shipping-address")
+                      : router.push("/")
+                  );
                 }}
               >
                 {isPending ? (
