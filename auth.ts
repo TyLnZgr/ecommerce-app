@@ -6,7 +6,7 @@ import type { NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { compareSync } from "bcrypt-ts-edge";
+import { compare } from "./lib/encrypt";
 
 export const config = {
   pages: {
@@ -35,7 +35,7 @@ export const config = {
         });
         //Check if user exists and if password corret
         if (user && user.password) {
-          const isMatch = compareSync(
+          const isMatch = await compare(
             credentials.password as string,
             user.password
           );

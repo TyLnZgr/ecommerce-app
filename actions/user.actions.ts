@@ -13,10 +13,10 @@ import { prisma } from "@/db/prisma";
 import { formatError } from "@/lib/utils";
 import { ShippingAddress } from "@/types";
 import z from "zod";
-import { hashSync } from "bcrypt-ts-edge";
 import { PAGE_SIZE } from "@/lib/constants";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@/lib/generated/prisma";
+import { hash } from "@/lib/encrypt";
 
 //Sign in the user with credentials
 
@@ -56,7 +56,7 @@ export async function signUp(prevState: unknown, formData: FormData) {
     const user = signUpFormSchema.parse(data);
     const plainPassword = user.password;
 
-    user.password = hashSync(user.password, 10);
+    user.password = await hash(user.password);
 
     await prisma.user.create({
       data: {
