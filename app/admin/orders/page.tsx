@@ -20,6 +20,7 @@ import React from "react";
 export const metadata: Metadata = {
   title: "Admin Orders",
 };
+
 export default async function AdminOrdersPage(props: {
   searchParams: Promise<{ page: string }>;
 }) {

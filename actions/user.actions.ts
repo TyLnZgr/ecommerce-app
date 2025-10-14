@@ -5,6 +5,7 @@ import {
   shippingAddressSchema,
   signInFormSchema,
   signUpFormSchema,
+  updateUserSchema,
 } from "@/lib/validator";
 import { auth, signIn, signOut } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -13,6 +14,8 @@ import { formatError } from "@/lib/utils";
 import { ShippingAddress } from "@/types";
 import z from "zod";
 import { hashSync } from "bcrypt-ts-edge";
+import { PAGE_SIZE } from "@/lib/constants";
+import { revalidatePath } from "next/cache";
 
 //Sign in the user with credentials
 
@@ -156,5 +159,66 @@ export async function updateUserProfile(user: { name: string; email: string }) {
     };
   } catch (err) {
     return { success: false, message: formatError(err) };
+  }
+}
+export async function getAllUsers({
+  limit = PAGE_SIZE,
+  page,
+}: {
+  limit?: number;
+  page: number;
+}) {
+  const data = await prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+  const dataCount = await prisma.user.count();
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
+  };
+}
+export async function deleteUser(id: string) {
+  try {
+    const userExist = await prisma.user.findFirst({
+      where: { id },
+    });
+    if (!userExist) throw new Error("Product is not found");
+    await prisma.user.delete({
+      where: { id },
+    });
+    revalidatePath(`/admin/users`);
+    return {
+      success: true,
+      message: "User deleted successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+export async function updateUser(user: z.infer<typeof updateUserSchema>) {
+  try {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: user.name,
+        role: user.role,
+      },
+    });
+    revalidatePath("/admin/users");
+    return {
+      success: true,
+      message: "User Updated Successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: formatError(error),
+    };
   }
 }
