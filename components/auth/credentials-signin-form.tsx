@@ -39,7 +39,7 @@ export default function CredentialsSigninForm() {
             required
             autoComplete="email"
             defaultValue={signInDefaultValues.email}
-            placeholder="Admin :admin@example.com"
+            placeholder="Admin :admin@example1.com"
           />
         </div>
         <div>
