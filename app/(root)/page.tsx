@@ -7,6 +7,7 @@ import {
 } from "@/actions/product.actions";
 import ProductCarousel from "@/components/product/product-carousel";
 import ViewAllProducts from "@/components/view-all-products";
+import IconBoxes from "@/components/icon.boxes";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -22,6 +23,7 @@ export default async function HomePage() {
       )}
       <ProductList data={products} title="Products" />
       <ViewAllProducts />
+      <IconBoxes />
     </>
   );
 }
